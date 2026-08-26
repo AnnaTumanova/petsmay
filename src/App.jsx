@@ -488,21 +488,18 @@ const CreatorSignup = ({ c }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!supabase) {
-      setStatus('error')
-      return
-    }
     const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
     if (!accessKey) {
+      console.error('Missing VITE_WEB3FORMS_KEY')
       setStatus('error')
       return
     }
     setStatus('loading')
-    const { error: dbError } = await supabase.from('creator_signups').insert([form])
-    if (dbError) {
-      console.error(dbError)
-      setStatus('error')
-      return
+    if (supabase) {
+      const { error: dbError } = await supabase.from('creator_signups').insert([form])
+      if (dbError) {
+        console.error('Supabase insert failed:', dbError)
+      }
     }
     try {
       const message = [
