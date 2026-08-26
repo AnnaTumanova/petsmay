@@ -167,7 +167,7 @@ const copy = {
     contact: {
       title: 'Gotowy na pierwszy pakiet?',
       text: 'Napisz do nas, a w 15 minut rozmowy ustalimy, który pakiet będzie najlepszy dla Twojej marki.',
-      email: 'Napisz na hello@petsmay.com',
+      email: 'Napisz na hello@petsmay.org',
       call: 'Umów rozmowę',
     },
     footer: 'Agencja UGC dla marek zoologicznych · Polska',
@@ -314,7 +314,7 @@ const copy = {
     contact: {
       title: 'Ready for your first package?',
       text: 'Email us, and in a 15-minute call we will decide which package fits your brand best.',
-      email: 'Write to hello@petsmay.com',
+      email: 'Write to hello@petsmay.org',
       call: 'Book a call',
     },
     footer: 'UGC agency for pet brands · Poland',
@@ -533,7 +533,7 @@ function App() {
               <h2>{c.contact.title}</h2>
               <p>{c.contact.text}</p>
               <div className="hero-actions">
-                <a href="mailto:hello@petsmay.com" className="btn btn-amber">{c.contact.email}</a>
+                <a href="mailto:hello@petsmay.org" className="btn btn-amber">{c.contact.email}</a>
                 <a href="#" className="btn btn-ghost" style={{ borderColor: 'var(--paper)', color: 'var(--paper)' }}>{c.contact.call}</a>
               </div>
             </div>
@@ -543,7 +543,7 @@ function App() {
 
       <footer>
         <div className="wrap foot-row">
-          <span>© {new Date().getFullYear()} PetsMay.com</span>
+          <span>© {new Date().getFullYear()} PetsMay.org</span>
           <span>{c.footer}</span>
         </div>
       </footer>
