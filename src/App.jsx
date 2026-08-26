@@ -235,6 +235,7 @@ const copy = {
       title: 'Zostań twórcą PetsMay',
       text: 'Masz psa lub kota i lubisz nagrywać? Zapisz się do naszej bazy i bierz udział w kampaniach.',
       form: {
+        subject: 'Nowe zgłoszenie twórcy z PetsMay',
         email: 'E-mail',
         name: 'Imię',
         city: 'Miasto',
@@ -459,6 +460,7 @@ const copy = {
       title: 'Become a PetsMay creator',
       text: 'Have a dog or cat and enjoy filming? Join our creator base and take part in brand campaigns.',
       form: {
+        subject: 'New PetsMay creator signup',
         email: 'Email',
         name: 'Name',
         city: 'City',
@@ -490,14 +492,49 @@ const CreatorSignup = ({ c }) => {
       setStatus('error')
       return
     }
-    setStatus('loading')
-    const { error } = await supabase.from('creator_signups').insert([form])
-    if (error) {
-      console.error(error)
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
+    if (!accessKey) {
       setStatus('error')
-    } else {
-      setStatus('success')
-      setForm({ email: '', name: '', city: '', pet: '', social: '', about: '' })
+      return
+    }
+    setStatus('loading')
+    const { error: dbError } = await supabase.from('creator_signups').insert([form])
+    if (dbError) {
+      console.error(dbError)
+      setStatus('error')
+      return
+    }
+    try {
+      const message = [
+        `${c.form.name}: ${form.name}`,
+        `${c.form.email}: ${form.email}`,
+        `${c.form.city}: ${form.city}`,
+        `${c.form.pet}: ${form.pet}`,
+        `${c.form.social}: ${form.social}`,
+        `${c.form.about}: ${form.about}`,
+      ].join('\n')
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: c.form.subject,
+          from_name: form.name,
+          email: form.email,
+          message,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setStatus('success')
+        setForm({ email: '', name: '', city: '', pet: '', social: '', about: '' })
+      } else {
+        console.error(data)
+        setStatus('error')
+      }
+    } catch (err) {
+      console.error(err)
+      setStatus('error')
     }
   }
 
