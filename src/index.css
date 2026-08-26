@@ -383,6 +383,69 @@
     letter-spacing:.04em;
   }
 
+  /* example formats */
+  .pattern-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+    gap:18px;
+    margin-bottom:52px;
+  }
+  .pattern-card{
+    background:var(--paper-dim);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px;
+  }
+  .pattern-card h3{
+    font-size:17px;
+    margin-bottom:8px;
+  }
+  .pattern-card p{
+    font-size:15px;
+    color:#3B4038;
+    margin:0;
+  }
+  .samples-title{
+    font-size:20px;
+    margin-bottom:22px;
+  }
+  .sample-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+    gap:20px;
+  }
+  .sample-card{
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:6px;
+    padding:26px;
+  }
+  .sample-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:12px;
+  }
+  .sample-hook{
+    font-size:16.5px;
+    font-weight:600;
+    margin-bottom:16px;
+    color:var(--paper);
+  }
+  .sample-card ol{
+    margin:0;
+    padding-left:18px;
+    font-size:14.5px;
+    color:#D7E2DA;
+  }
+  .sample-card li{
+    margin-bottom:8px;
+    line-height:1.45;
+  }
+
   /* FAQ */
   .faq-item{
     border-bottom:1px solid var(--line);

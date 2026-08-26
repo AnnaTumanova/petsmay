@@ -138,9 +138,59 @@ const copy = {
     },
     portfolio: {
       eyebrow: 'Portfolio',
-      title: 'Przykłady w drodze',
-      text: 'Pracujemy nad pierwszymi realizacjami — pierwsze gotowe materiały pojawią się tutaj wkrótce.',
-      soon: 'WKRÓTCE',
+      title: 'Przykładowe formaty UGC',
+      text: 'Tak wygląda realny materiał od twórców — wzorce, które marki kupują najchętniej. Każdy format otwiera się od haka, pokazuje szczerą reakcję zwierzaka i mieści się w pionowym klipie do 30 sekund.',
+      patterns: [
+        {
+          title: 'Rozmowa do kamery + reakcja',
+          desc: 'Twórca mówi jak do znajomego, pokazuje prawdziwą reakcję psa lub kota na smakołyk, bez scenariusza — celowo surowe i autentyczne.',
+        },
+        {
+          title: 'Hak na początku',
+          desc: 'Otwarcie od kontrowersyjnego lub relatable zdania („mój pies nienawidził każdego przysmaku, aż ten...”), potem estetyczne B-roll z produktem w użyciu.',
+        },
+        {
+          title: 'Przed / po',
+          desc: 'Szczególnie mocne dla suplementów i produktów funkcjonalnych — starszy pies z problemami stawowymi, niespokojny kot z adopcji, dokumentowanie zmiany.',
+        },
+        {
+          title: 'Unboxing / dzień z życia',
+          desc: 'Najprostszy format: szczera pierwsza reakcja na otrzymanie i przetestowanie produktu.',
+        },
+      ],
+      samplesTitle: 'Przykładowe scenariusze',
+      samples: [
+        {
+          product: 'Przysmak',
+          hook: '„Mój pies nienawidził każdego przysmaku, aż dostał ten.”',
+          shots: [
+            '0–3 s: twórca mówi haka prosto do kamery.',
+            '3–8 s: pokazanie opakowania i otwarcie.',
+            '8–20 s: pies bierze przysmak, żuje, merda ogonem — autentyczna reakcja.',
+            '20–28 s: podsumowanie: „Zajmuje mu to dłużej niż zwykle, więc nie żebrze.”',
+          ],
+        },
+        {
+          product: 'Zabawka',
+          hook: '„Pierwszy raz widziałam, żeby tak długo się nią bawił.”',
+          shots: [
+            '0–3 s: hak w pionowym formacie.',
+            '3–10 s: unboxing — wyciąganie zabawki z pudełka.',
+            '10–22 s: pies bawi się zabawką — skoki, bieg, aportowanie.',
+            '22–30 s: zwierzak sam wraca do zabawki po zakończeniu nagrania.',
+          ],
+        },
+        {
+          product: 'Suplement',
+          hook: '„Dwa tygodnie temu wstawał rano z trudem. Teraz zobaczcie sami.”',
+          shots: [
+            '0–4 s: krótki „przed” — starszy pies powoli wstaje.',
+            '4–10 s: pokazanie opakowania suplementu i dozowanie.',
+            '10–22 s: codzienna rutyna — jedzenie, spacer, zabawa.',
+            '22–30 s: „po” — ten sam pies wstaje energiczniej, biegnie po schodach.',
+          ],
+        },
+      ],
     },
     faq: {
       eyebrow: 'FAQ',
@@ -285,9 +335,59 @@ const copy = {
     },
     portfolio: {
       eyebrow: 'Portfolio',
-      title: 'Examples on the way',
-      text: 'We are working on the first productions — finished materials will appear here soon.',
-      soon: 'COMING SOON',
+      title: 'Sample UGC formats',
+      text: 'This is what real creator content looks like — the patterns brands buy most. Every format opens with a hook, shows an honest pet reaction, and fits a vertical clip under 30 seconds.',
+      patterns: [
+        {
+          title: 'Talk-to-camera + reaction',
+          desc: 'The creator speaks like a friend, shows the dog or cat\'s genuine reaction to a treat, no script — raw and authentic on purpose.',
+        },
+        {
+          title: 'Hook-first',
+          desc: 'Opens with a controversial or relatable line ("my dog hated every treat until this one"), then cuts to aesthetic B-roll of the product in use.',
+        },
+        {
+          title: 'Before / after',
+          desc: 'Especially strong for supplements and functional products — an older dog with joint issues, an anxious rescue cat, documenting a transformation.',
+        },
+        {
+          title: 'Unboxing / day-in-the-life',
+          desc: 'The simplest format: a genuine first reaction to receiving and trying the product.',
+        },
+      ],
+      samplesTitle: 'Sample shot-lists',
+      samples: [
+        {
+          product: 'Treat',
+          hook: '"My dog hated every treat until this one."',
+          shots: [
+            '0–3 s: creator delivers the hook straight to camera.',
+            '3–8 s: showing the pack and opening it.',
+            '8–20 s: dog takes the treat, chews, wags tail — genuine reaction.',
+            '20–28 s: wrap-up: "It keeps him busy longer, so no begging."',
+          ],
+        },
+        {
+          product: 'Toy',
+          hook: '"First time I\'ve seen him play with one toy for this long."',
+          shots: [
+            '0–3 s: hook in vertical format.',
+            '3–10 s: unboxing — pulling the toy out of the box.',
+            '10–22 s: dog plays with the toy — jumping, running, fetching.',
+            '22–30 s: the pet goes back to the toy after the clip ends.',
+          ],
+        },
+        {
+          product: 'Supplement',
+          hook: '"Two weeks ago he struggled to get up in the morning. See for yourself."',
+          shots: [
+            '0–4 s: short "before" — older dog getting up slowly.',
+            '4–10 s: showing the supplement pack and dosing.',
+            '10–22 s: daily routine — eating, walking, playing.',
+            '22–30 s: "after" — the same dog gets up easier, runs the stairs.',
+          ],
+        },
+      ],
     },
     faq: {
       eyebrow: 'FAQ',
@@ -502,9 +602,26 @@ function App() {
               <h2>{c.portfolio.title}</h2>
               <p>{c.portfolio.text}</p>
             </div>
-            <div className="reel-placeholder">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div className="reel-frame" key={i}><span>{c.portfolio.soon}</span></div>
+            <div className="pattern-grid">
+              {c.portfolio.patterns.map((p, i) => (
+                <div className="pattern-card" key={i}>
+                  <h3>{p.title}</h3>
+                  <p>{p.desc}</p>
+                </div>
+              ))}
+            </div>
+            <h3 className="samples-title">{c.portfolio.samplesTitle}</h3>
+            <div className="sample-grid">
+              {c.portfolio.samples.map((s, i) => (
+                <div className="sample-card" key={i}>
+                  <div className="sample-tag">{s.product}</div>
+                  <p className="sample-hook">{s.hook}</p>
+                  <ol>
+                    {s.shots.map((shot, j) => (
+                      <li key={j}>{shot}</li>
+                    ))}
+                  </ol>
+                </div>
               ))}
             </div>
           </div>
