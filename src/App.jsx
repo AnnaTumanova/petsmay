@@ -470,6 +470,10 @@ const CreatorSignup = ({ c }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!supabase) {
+      setStatus('error')
+      return
+    }
     setStatus('loading')
     const { error } = await supabase.from('creator_signups').insert([form])
     if (error) {
