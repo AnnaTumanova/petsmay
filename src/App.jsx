@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { supabase } from './supabaseClient'
 
 const PawIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -34,6 +35,7 @@ const copy = {
       pricing: 'Cennik',
       forWhom: 'Dla kogo',
       faq: 'FAQ',
+      creator: 'Zostań twórcą',
       cta: 'Zamów pakiet',
     },
     hero: {
@@ -220,6 +222,24 @@ const copy = {
       email: 'Napisz na hello@petsmay.org',
       call: 'Umów rozmowę',
     },
+    creatorSignup: {
+      eyebrow: 'Twórcy',
+      title: 'Zostań twórcą PetsMay',
+      text: 'Masz psa lub kota i lubisz nagrywać? Zapisz się do naszej bazy i bierz udział w kampaniach.',
+      form: {
+        email: 'E-mail',
+        name: 'Imię',
+        city: 'Miasto',
+        pet: 'Zwierzak',
+        petOptions: ['Pies', 'Kot', 'Pies i kot'],
+        social: 'Instagram / TikTok',
+        about: 'Kilka słów o Tobie i zwierzaku',
+        submit: 'Zapisz się',
+        sending: 'Wysyłanie...',
+        success: 'Dziękujemy! Twoje zgłoszenie zostało zapisane. Odezwiemy się wkrótce.',
+        error: 'Coś poszło nie tak. Spróbuj ponownie lub napisz na hello@petsmay.org.',
+      },
+    },
     footer: 'Agencja UGC dla marek zoologicznych · Polska',
   },
   en: {
@@ -231,6 +251,7 @@ const copy = {
       pricing: 'Pricing',
       forWhom: 'For whom',
       faq: 'FAQ',
+      creator: 'Become a creator',
       cta: 'Order a package',
     },
     hero: {
@@ -417,8 +438,106 @@ const copy = {
       email: 'Write to hello@petsmay.org',
       call: 'Book a call',
     },
+    creatorSignup: {
+      eyebrow: 'Creators',
+      title: 'Become a PetsMay creator',
+      text: 'Have a dog or cat and enjoy filming? Join our creator base and take part in brand campaigns.',
+      form: {
+        email: 'Email',
+        name: 'Name',
+        city: 'City',
+        pet: 'Pet',
+        petOptions: ['Dog', 'Cat', 'Dog and cat'],
+        social: 'Instagram / TikTok',
+        about: 'A few words about you and your pet',
+        submit: 'Sign up',
+        sending: 'Sending...',
+        success: 'Thanks! Your application was saved. We will get back to you soon.',
+        error: 'Something went wrong. Please try again or email hello@petsmay.org.',
+      },
+    },
     footer: 'UGC agency for pet brands · Poland',
   },
+}
+
+const CreatorSignup = ({ c }) => {
+  const [form, setForm] = useState({ email: '', name: '', city: '', pet: '', social: '', about: '' })
+  const [status, setStatus] = useState('idle')
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setStatus('loading')
+    const { error } = await supabase.from('creator_signups').insert([form])
+    if (error) {
+      console.error(error)
+      setStatus('error')
+    } else {
+      setStatus('success')
+      setForm({ email: '', name: '', city: '', pet: '', social: '', about: '' })
+    }
+  }
+
+  if (status === 'success') {
+    return <div className="signup-success">{c.form.success}</div>
+  }
+
+  return (
+    <form className="creator-form" onSubmit={handleSubmit}>
+      <input
+        name="email"
+        type="email"
+        placeholder={c.form.email}
+        value={form.email}
+        onChange={handleChange}
+        required
+      />
+      <div className="form-row two-up">
+        <input
+          name="name"
+          type="text"
+          placeholder={c.form.name}
+          value={form.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="city"
+          type="text"
+          placeholder={c.form.city}
+          value={form.city}
+          onChange={handleChange}
+        />
+      </div>
+      <select name="pet" value={form.pet} onChange={handleChange} required>
+        <option value="">{c.form.pet}</option>
+        {c.form.petOptions.map((o) => (
+          <option key={o} value={o}>{o}</option>
+        ))}
+      </select>
+      <input
+        name="social"
+        type="text"
+        placeholder={c.form.social}
+        value={form.social}
+        onChange={handleChange}
+      />
+      <textarea
+        name="about"
+        rows="4"
+        placeholder={c.form.about}
+        value={form.about}
+        onChange={handleChange}
+      />
+      <button type="submit" className="btn btn-amber" disabled={status === 'loading'}>
+        {status === 'loading' ? c.form.sending : c.form.submit}
+      </button>
+      {status === 'error' && <p className="form-error">{c.form.error}</p>}
+    </form>
+  )
 }
 
 function App() {
@@ -442,6 +561,7 @@ function App() {
             <a href="#cennik">{c.nav.pricing}</a>
             <a href="#dla-kogo">{c.nav.forWhom}</a>
             <a href="#faq">{c.nav.faq}</a>
+            <a href="#tworcy">{c.nav.creator}</a>
           </div>
           <div className="nav-right">
             <div className="lang-switch" aria-label="Language">
@@ -602,6 +722,17 @@ function App() {
               <h2>{c.portfolio.title}</h2>
               <p>{c.portfolio.text}</p>
             </div>
+            <div className="reel-placeholder">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div className="reel-frame" key={i}>
+                  <img
+                    src={`https://placedog.net/300/400?r=${i + 1}`}
+                    alt={lang === 'pl' ? `Przykład ${i + 1}` : `Example ${i + 1}`}
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
             <div className="pattern-grid">
               {c.portfolio.patterns.map((p, i) => (
                 <div className="pattern-card" key={i}>
@@ -641,6 +772,17 @@ function App() {
                 </details>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section id="tworcy" className="creator-signup">
+          <div className="wrap">
+            <div className="section-head">
+              <span className="eyebrow">{c.creatorSignup.eyebrow}</span>
+              <h2>{c.creatorSignup.title}</h2>
+              <p>{c.creatorSignup.text}</p>
+            </div>
+            <CreatorSignup c={c.creatorSignup} />
           </div>
         </section>
 
