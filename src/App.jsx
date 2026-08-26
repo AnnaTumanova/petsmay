@@ -219,8 +219,16 @@ const copy = {
     contact: {
       title: 'Gotowy na pierwszy pakiet?',
       text: 'Napisz do nas, a w 15 minut rozmowy ustalimy, który pakiet będzie najlepszy dla Twojej marki.',
-      email: 'Napisz na hello@petsmay.org',
-      call: 'Umów rozmowę',
+      form: {
+        subject: 'Nowa wiadomość z PetsMay',
+        name: 'Imię',
+        email: 'E-mail',
+        message: 'Wiadomość',
+        submit: 'Wyślij',
+        sending: 'Wysyłanie...',
+        success: 'Dziękujemy! Twoja wiadomość została wysłana.',
+        error: 'Coś poszło nie tak. Spróbuj ponownie.',
+      },
     },
     creatorSignup: {
       eyebrow: 'Twórcy',
@@ -435,8 +443,16 @@ const copy = {
     contact: {
       title: 'Ready for your first package?',
       text: 'Email us, and in a 15-minute call we will decide which package fits your brand best.',
-      email: 'Write to hello@petsmay.org',
-      call: 'Book a call',
+      form: {
+        subject: 'New message from PetsMay',
+        name: 'Name',
+        email: 'Email',
+        message: 'Message',
+        submit: 'Send',
+        sending: 'Sending...',
+        success: 'Thanks! Your message has been sent.',
+        error: 'Something went wrong. Please try again.',
+      },
     },
     creatorSignup: {
       eyebrow: 'Creators',
@@ -535,6 +551,85 @@ const CreatorSignup = ({ c }) => {
         placeholder={c.form.about}
         value={form.about}
         onChange={handleChange}
+      />
+      <button type="submit" className="btn btn-amber" disabled={status === 'loading'}>
+        {status === 'loading' ? c.form.sending : c.form.submit}
+      </button>
+      {status === 'error' && <p className="form-error">{c.form.error}</p>}
+    </form>
+  )
+}
+
+const ContactForm = ({ c }) => {
+  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [status, setStatus] = useState('idle')
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setStatus('loading')
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
+    if (!accessKey) {
+      setStatus('error')
+      return
+    }
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: c.form.subject,
+          from_name: form.name,
+          email: form.email,
+          message: form.message,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setStatus('success')
+        setForm({ name: '', email: '', message: '' })
+      } else {
+        setStatus('error')
+      }
+    } catch (err) {
+      console.error(err)
+      setStatus('error')
+    }
+  }
+
+  if (status === 'success') {
+    return <div className="signup-success">{c.form.success}</div>
+  }
+
+  return (
+    <form className="creator-form" onSubmit={handleSubmit}>
+      <input
+        name="name"
+        type="text"
+        placeholder={c.form.name}
+        value={form.name}
+        onChange={handleChange}
+        required
+      />
+      <input
+        name="email"
+        type="email"
+        placeholder={c.form.email}
+        value={form.email}
+        onChange={handleChange}
+        required
+      />
+      <textarea
+        name="message"
+        rows="4"
+        placeholder={c.form.message}
+        value={form.message}
+        onChange={handleChange}
+        required
       />
       <button type="submit" className="btn btn-amber" disabled={status === 'loading'}>
         {status === 'loading' ? c.form.sending : c.form.submit}
@@ -795,10 +890,7 @@ function App() {
             <div className="cta-final">
               <h2>{c.contact.title}</h2>
               <p>{c.contact.text}</p>
-              <div className="hero-actions">
-                <a href="mailto:hello@petsmay.org" className="btn btn-amber">{c.contact.email}</a>
-                <a href="#" className="btn btn-ghost" style={{ borderColor: 'var(--paper)', color: 'var(--paper)' }}>{c.contact.call}</a>
-              </div>
+              <ContactForm c={c.contact} />
             </div>
           </div>
         </section>
